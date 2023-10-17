@@ -10,7 +10,6 @@ exports.handler = async (event, context) => {
 */
 
 exports.handler = async (event, context) => {
-  console.log("handler is working");
   const options = {
     method: "GET",
     headers: {
@@ -32,12 +31,15 @@ exports.handler = async (event, context) => {
     }
   }
 
+  const testMessage = "this is a test";
+
   try {
     const responseData = await fetchData();
 
     return {
       statusCode: 200,
-      body: JSON.stringify(responseData),
+      // body: JSON.stringify(responseData),
+      body: JSON.stringify(testMessage)
     };
   } catch (error) {
     return {
