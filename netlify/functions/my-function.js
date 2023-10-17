@@ -1,4 +1,45 @@
 // server-less function should be in the folder: netlify/functions/
+// const fetch = require('node-fetch'); // Import the 'node-fetch' library
+
+exports.handler = async (event, context) => {
+  const apiUrl = 'https://catfact.ninja/fact';
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  const requestOptions = {
+    method: 'GET',
+    headers: headers,
+  };
+
+  async function fetchData() {
+    const response = await fetch(apiUrl, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  }
+
+  try {
+    const data = await fetchData();
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(data),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+};
+
+
+/////////////////////////////////////////////////////////////////
 
 /*
 exports.handler = async (event, context) => {
@@ -10,10 +51,10 @@ exports.handler = async (event, context) => {
 };
 */
 
-// EXPERIMENTAL
+////////////////////////////////////////////////////////////////
 
+/*
 const fetch = require('node-fetch'); // Import the 'node-fetch' library
-
 exports.handler = async (event, context) => {
   const options = {
     method: 'GET',
@@ -48,3 +89,4 @@ exports.handler = async (event, context) => {
     };
   }
 };
+*/
