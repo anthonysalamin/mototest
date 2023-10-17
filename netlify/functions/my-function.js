@@ -1,9 +1,10 @@
 // server-less function should be in the folder: netlify/functions/
 
 exports.handler = async (event, context) => {
+  const testMessage = "this is a test message";
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: "Hello from my serverless function!" }),
+    body: JSON.stringify({ message: testMessage }),
   };
 };
 
