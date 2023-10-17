@@ -1,14 +1,14 @@
-// netlify/functions/my-function.js
+// server-less function should be in the folder: netlify/functions/
 
-/*
 exports.handler = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ message: "Hello from my serverless function!" }),
   };
 };
-*/
 
+
+/*
 exports.handler = async (event, context) => {
   const options = {
     method: "GET",
@@ -48,4 +48,4 @@ exports.handler = async (event, context) => {
     };
   }
 };
-
+*/
