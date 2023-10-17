@@ -1,60 +1,39 @@
 // server-less function should be in the folder: netlify/functions/
 
-const https = require('https');
-
 exports.handler = async (event, context) => {
-  const apiUrl = 'https://catfact.ninja/fact';
-
-  const requestOptions = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(apiUrl, requestOptions, (res) => {
-      let data = '';
-
-      res.on('data', (chunk) => {
-        data += chunk;
-      });
-
-      res.on('end', () => {
-        if (res.statusCode === 200) {
-          try {
-            const jsonData = JSON.parse(data);
-            resolve({
-              statusCode: 200,
-              body: JSON.stringify(jsonData),
-            });
-          } catch (error) {
-            reject({
-              statusCode: 500,
-              body: JSON.stringify({ error: 'Failed to parse JSON response' }),
-            });
-          }
-        } else {
-          reject({
-            statusCode: res.statusCode,
-            body: JSON.stringify({ error: `HTTP error! Status: ${res.statusCode}` }),
-          });
-        }
-      });
-    });
-
-    req.on('error', (error) => {
-      reject({
-        statusCode: 500,
-        body: JSON.stringify({ error: error.message }),
-      });
-    });
-
-    req.end();
-  });
+  try {
+    const catFact = await fetchData();
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ catFact }),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
 };
 
-////////////////////////////////////////////////////////////////////
+function fetchData() {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const url = "https://catfact.ninja/fact";
+    xhr.open("GET", url, true);
+    xhr.onload = function () {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        const response = xhr.responseText;
+        resolve(response);
+      } else {
+        reject(new Error("Request failed with status: " + xhr.status));
+      }
+    };
+    xhr.onerror = function () {
+      reject(new Error("Network error occurred"));
+    };
+    xhr.send();
+  });
+}
 
 /*
 const fetch = require('node-fetch'); // Import the 'node-fetch' library
