@@ -1,45 +1,38 @@
 <p>hello</p>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        console.log("dom has loaded");
-        callMyFunction();
+/*
+ * call server-less function on netlify
+ * console log the data returned by the response
+*/
+document.addEventListener("DOMContentLoaded", () => {
+  callMyFunction();
+});
+
+function callMyFunction() {
+  console.log("calling my netlify server-less function...");
+  const functionUrl =
+    "https://mototest.netlify.app/.netlify/functions/my-function";
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+
+  fetch(functionUrl, requestOptions)
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Failed to fetch data");
+      }
+    })
+    .then((data) => {
+      console.log(data.message);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
     });
-
-    function callMyFunction() {
-        console.log("calling my function...");
-        // Construct the URL of your Netlify serverless function
-        const functionUrl =
-            "https://mototest.netlify.app/.netlify/functions/my-function";
-
-        // Define the fetch request options
-        const requestOptions = {
-            method: "GET", // or 'POST', 'PUT', etc. depending on your function
-            headers: {
-               'Content-Type': 'application/json',
-            //   'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
-            },
-            // Add request body if needed (for POST or other HTTP methods)
-            // body: JSON.stringify({ key: 'value' }),
-        };
-
-        // Make the fetch request
-        fetch(functionUrl, requestOptions)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json(); // Parse the response JSON
-                } else {
-                    throw new Error("Failed to fetch data");
-                }
-            })
-            .then((data) => {
-                // Handle the data returned by your serverless function
-                console.log(data.message);
-            })
-            .catch((error) => {
-                // Handle errors
-                console.error("Error:", error);
-            });
-
-    } // end callMyFunction
+} // end callMyFunction
 </script>

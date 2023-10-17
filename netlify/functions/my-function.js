@@ -10,6 +10,7 @@ exports.handler = async (event, context) => {
 */
 
 exports.handler = async (event, context) => {
+  console.log("handler is working");
   const options = {
     method: "GET",
     headers: {
@@ -20,6 +21,7 @@ exports.handler = async (event, context) => {
   };
 
   async function fetchData() {
+    console.log("fetchData is working");
     try {
       const response = await fetch("https://api.webflow.com/v2/sites/652cd61429f6f7d9d21bb49e", options);
       const data = await response.json();
