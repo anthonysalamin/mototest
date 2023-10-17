@@ -1,5 +1,63 @@
 // server-less function should be in the folder: netlify/functions/
-// const fetch = require('node-fetch'); // Import the 'node-fetch' library
+
+const https = require('https');
+
+exports.handler = async (event, context) => {
+  const apiUrl = 'https://catfact.ninja/fact';
+
+  const requestOptions = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(apiUrl, requestOptions, (res) => {
+      let data = '';
+
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const jsonData = JSON.parse(data);
+            resolve({
+              statusCode: 200,
+              body: JSON.stringify(jsonData),
+            });
+          } catch (error) {
+            reject({
+              statusCode: 500,
+              body: JSON.stringify({ error: 'Failed to parse JSON response' }),
+            });
+          }
+        } else {
+          reject({
+            statusCode: res.statusCode,
+            body: JSON.stringify({ error: `HTTP error! Status: ${res.statusCode}` }),
+          });
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      reject({
+        statusCode: 500,
+        body: JSON.stringify({ error: error.message }),
+      });
+    });
+
+    req.end();
+  });
+};
+
+////////////////////////////////////////////////////////////////////
+
+/*
+const fetch = require('node-fetch'); // Import the 'node-fetch' library
 
 exports.handler = async (event, context) => {
   const apiUrl = 'https://catfact.ninja/fact';
@@ -37,6 +95,7 @@ exports.handler = async (event, context) => {
     };
   }
 };
+*/
 
 
 /////////////////////////////////////////////////////////////////
